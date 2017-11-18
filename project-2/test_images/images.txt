@@ -1,0 +1,17 @@
+ Volume in drive C is Windows
+ Volume Serial Number is 52BE-E1D0
+
+ Directory of C:\Work\Udacity\Self-Driving Car Engineer\github\CarND\project-2\test_images
+
+2017/11/18  17:41    <DIR>          .
+2017/11/18  17:41    <DIR>          ..
+2017/11/07  06:45            47,478 0 Do-Not-Enter.jpg
+2017/11/07  06:47           248,283 1 Speed limit (70kmh).png
+2017/11/07  06:48            49,081 2 Speed limit (100kmh).jpeg
+2017/11/07  06:50           142,393 3 stop sign SQUARE.png
+2017/11/07  06:48            57,753 4 Stop sign.jpg
+2017/11/18  11:32            73,690 6 Speed limit (70kmh) ZOOM.jpg
+2017/11/18  11:33            69,289 7 stop sign SQUARE ZOOM.png
+2017/11/18  17:41                 0 images.txt
+               8 File(s)        687,967 bytes
+               2 Dir(s)   6,965,280,768 bytes free
