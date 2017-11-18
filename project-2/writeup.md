@@ -19,21 +19,14 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 
-[image1]: ./test_images/visualization.jpg "Visualization"
-[image2]: ./test_images/grayscale.jpg "Grayscaling"
-[image3]: ./test_images/random_noise.jpg "Random Noise"
-[image4]: ./test_images/"0 Do-Not-Enter.jpg" "Traffic Sign 1"
-[image5]: ./test_images/1 Speed limit (70kmh).png "Traffic Sign 2"
-[image6]: ./test_images/placeholder.png "Traffic Sign 3"
-[image7]: ./test_images/placeholder.png "Traffic Sign 4"
-[image8]: ./test_images/placeholder.png "Traffic Sign 5"
-![image1](./test_images/"0 Do-Not-Enter.jpg")
-![image2](./test_images/1 Speed limit (70kmh).png)
-![image3](./test_images/2 Speed limit (100kmh).jpeg)
-![image4](./test_images/3 stop sign SQUARE.png)
-![image5](./test_images/4 Stop sign.jpg)
-![image6](./test_images/5 Speed limit (70kmh) ZOOM.jpg)
-![image7](./test_images/6 stop sign SQUARE ZOOM.png)
+
+![image1]("./test_images/0 Do-Not-Enter.jpg")
+![image2]("./test_images/1 Speed limit (70kmh).png")
+![image3]("./test_images/2 Speed limit (100kmh).jpeg")
+![image4]("./test_images/3 stop sign SQUARE.png")
+![image5]("./test_images/4 Stop sign.jpg")
+![image6]("./test_images/5 Speed limit (70kmh) ZOOM.jpg")
+![image7]("./test_images/6 stop sign SQUARE ZOOM.png")
 
 ## Rubric Points
 ###Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/481/view) individually and describe how I addressed each point in my implementation.  
