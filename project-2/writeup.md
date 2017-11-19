@@ -20,13 +20,13 @@ The goals / steps of this project are the following:
 [//]: # (Image References)
 
 
-![image1]("./test_images/0 Do-Not-Enter.jpg")
-![image2]("./test_images/1 Speed limit (70kmh).png")
-![image3]("./test_images/2 Speed limit (100kmh).jpeg")
-![image4]("./test_images/3 stop sign SQUARE.png")
-![image5]("./test_images/4 Stop sign.jpg")
-![image6]("./test_images/5 Speed limit (70kmh) ZOOM.jpg")
-![image7]("./test_images/6 stop sign SQUARE ZOOM.png")
+![image1](./test_images/0_Do-Not-Enter.jpg)
+![image2](./test_images/1_Speed-limit-70kmh.png)
+![image3](./test_images/2_Speed-limit-100kmh.jpeg)
+![image4](./test_images/3_stop-sign-SQUARE.png)
+![image5](./test_images/4_Stop-sign-ANGLE.jpg)
+![image6](./test_images/5_Speed-limit-70kmh-ZOOM.jpg)
+![image7](./test_images/6_stop-sign-SQUARE-ZOOM.png)
 
 ## Rubric Points
 ###Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/481/view) individually and describe how I addressed each point in my implementation.  
@@ -36,7 +36,7 @@ The goals / steps of this project are the following:
 
 ####1. Provide a Writeup / README that includes all the rubric points and how you addressed each one. You can submit your writeup as markdown or pdf. You can use this template as a guide for writing the report. The submission includes the project code.
 
-You're reading it! and here is a link to my [project code](https://github.com/udacity/CarND-Traffic-Sign-Classifier-Project/blob/master/Traffic_Sign_Classifier.ipynb)
+You're reading it! and here is a link to my [project code](https://github.com/YoshiyukiKono/CarND/blob/master/project-2/Traffic_Sign_Classifier.ipynb)
 
 ###Data Set Summary & Exploration
 
