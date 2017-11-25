@@ -40,7 +40,9 @@ I used python methods and the numpy library to calculate summary statistics of t
 
 Here is an exploratory visualization of the data set. It is a bar chart showing how the data is distributed.
 
-![distribution of the data set](./images/data.png)
+![distribution of the training data set](./images/data1.png)
+![distribution of the validation data set](./images/data2.png)
+![distribution of the testdata set](./images/data3.png)
 
 ###Design and Test a Model Architecture
 
@@ -62,7 +64,7 @@ Here is an example of a traffic sign image before and after histogram equalizati
 As a last step, I normalized the image data to accomodate it with a proper numerical area because of the calculation logic.
 
 I had tried to generate additional data because the size of signes in the images should differ and it was expected that some images have some spaces around the singes and some images don't.
-Having said that, I finally decided not to adapt the data adaptation stratagy becuase my simple logic to zoom images didn't contribute to improve accuracy but make it lower,and I got hairly high accuracy without augumenting data set.
+Having said that, I finally decided not to adapt the data adaptation stratagy becuase my simple logic to zoom images didn't contribute to improve accuracy but make it lower,and I got fairly high accuracy without augumenting data set.
 
 
 ####2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
@@ -116,15 +118,15 @@ If an iterative approach was chosen:
 
 * How was the architecture adjusted and why was it adjusted? Typical adjustments could include choosing a different model architecture, adding or taking away layers (pooling, dropout, convolution, etc), using an activation function or changing the activation function. One common justification for adjusting an architecture would be due to overfitting or underfitting. A high accuracy on the training set but low accuracy on the validation set indicates over fitting; a low accuracy on both sets indicates under fitting.
 
-	* First, I adjusted the architechture by adding dopout layers after each RELU layers, but this architecture makes the accuraccy lower. Then, I removed dropout layers without the ones just before fully connected layers. This architecture works to contribute high accuracy.
+	* First, I adjusted the architechture by adding dopout layers after each RELU layers, but this architecture makes the accuraccy lower. Then, I removed dropout layers other than the ones just before fully connected layers. This architecture works to contribute high accuracy.
 
 * Which parameters were tuned? How were they adjusted and why?
 
-	* I tried more epochs, smaller learning rate, and  with simple architecuture but it didn't change the situation drastically. After I reached the final model mentioned above, I 
+	* I tried more epochs, smaller learning rate, and different batche sizes with the first simple architecuture but it didn't change the situation drastically. After I reached the final model mentioned above, I switched to use general parameters like 0.001 for learning rate and smaller number of epoches.
 
 * What are some of the important design choices and why were they chosen? For example, why might a convolution layer work well with this problem? How might a dropout layer help with creating a successful model?
 
-	* I tried to use dropout layers for each activation layers. It however didn't work to improve the accuracy. Then, I removed them without the ones before fully connected layers.
+	* Using dropout layers in an appropriate way was effective. It allows the model to avoid overfitting.
 
 If a well known architecture was chosen:
 
@@ -132,18 +134,18 @@ If a well known architecture was chosen:
 	* I chose LeNet.
 
 * Why did you believe it would be relevant to the traffic sign application?
-	* LeNet is used for MNIST data set.MNIST is a data set of numerical signs. I thought that traffic signs and numerical signs should be treated in the same way, as they are both signs, that is, artificial abstract message.
+	* LeNet is used for MNIST data set. MNIST is a data set of numerical signs. I thought that traffic signs and numerical signs can be logically treated in the same way, as they are both signs, that is, artificial abstract message.
 
 * How does the final model's accuracy on the training, validation and test set provide evidence that the model is working well?
 
-	* The final model's accuracy on the training was good.Validation accuracy and training accuracy are improvide during 30 epochs little by little without stacking to a certain number.
+	* The final model's accuracy on the training was good. Validation accuracy and training accuracy were improvide during 30 epochs little by little without stacking to a certain threshold.
  
 
 ###Test a Model on New Images
 
 ####1. Choose five German traffic signs found on the web and provide them in the report. For each image, discuss what quality or qualities might be difficult to classify.
 
-Here are five German traffic signs that I found on the web:
+Here are five + two German traffic signs that I found on the web (two images were the oned edited based on the other images):
 
 ![](./test_images/0_Do-Not-Enter.jpg)
 ![](./test_images/1_Speed-limit-70kmh.png)
@@ -162,7 +164,7 @@ Here are the results of the prediction:
 | Image			        |     Prediction	        	| 
 |:---------------------:|:---------------------------------------------:| 
 | No Entry      		| No Entry   				| 
-| 70 km/h     			| 70 km/h (20 km/h) 				|
+| 70 km/h     			| 70 km/h (20 km/h) 			|
 | 100 km/h			| 100 km/h				|
 | Stop Sign			| Priority Load				|
 | Stop Sign	      		| Ahead only(Yield)			|
@@ -170,7 +172,7 @@ Here are the results of the prediction:
 | Stop Sign			| Stop Sign				|
 
 
-The model was able to correctly guess 5 of the 7 traffic signs in the last prediction (and 4 of the 7 traffice signs in the second to the last one), which gives an accuracy of 71% in the last prediction and as the result of the evaluate method (42% in the second to the last one). This compares favorably to the accuracy on the test set of ...
+The model was able to correctly guess 5 of the 7 traffic signs in the last prediction (and 4 of the 7 traffice signs in the second to the last one), which gives an accuracy of 71% in the last prediction and as the result of the evaluate method (42% in the second to the last one). I might not be able to say that this compares favorably to the accuracy on the validation data set as well as test data set, but as I picked up the variety of imges intentionally, the result was thougt provoking to me. I'll explain the variety below.
  
 ####3. Describe how certain the model is when predicting on each of the five new images by looking at the softmax probabilities for each prediction. Provide the top 5 softmax probabilities for each image along with the sign type of each probability. (OPTIONAL: as described in the "Stand Out Suggestions" part of the rubric, visualizations can also be provided such as bar charts)
 
