@@ -53,7 +53,7 @@ class LeNet:
 		return model
 
 # network and training
-NB_EPOCH = 8#6#4# 2#10# 4 #7#20
+NB_EPOCH = 3#8#6#4# 2#10# 4 #7#20
 BATCH_SIZE = 128
 VERBOSE = 1
 OPTIMIZER = Adam()
@@ -83,17 +83,72 @@ def load(lines):
 		current_path = DIR_IMG + filename
 		image = cv2.imread(current_path)
 		images.append(image)	
-
 		measurement = float(line[3])
 		measurements.append(measurement)	
+	x_train = np.array(images)
+	y_train = np.array(measurements)
+	return x_train, y_train
 
+def equalize_histogram(image):
+	copied_image = image.copy()
+	copied_image[:,:,0] = cv2.equalizeHist(image[:,:,0])
+	copied_image[:,:,1] = cv2.equalizeHist(image[:,:,1])
+	copied_image[:,:,2] = cv2.equalizeHist(image[:,:,2])
+	return copied_image
 
+def process_image(image):
+	if IMG_DIM == 1:
+		print("RGB",np.array(image).shape)
+		processed_image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+		print("GRAY",np.array(processed_image).shape)
+	else:
+		processed_image = equalize_histogram(image)
+	#image_copy = gray_image.copy()	
+	#image_copy[:,:,0] = cv2.equalizeHist(gray_image_copy[:,:,0])	
+	#return image_copy
+	return processed_image#gray_image
+
+def loadWithFlipImage(lines):  
+	images = []
+	measurements = []
+	for line in lines:
+		#source_path = line[0]
+		#filename = source_path.split('/')[-1]
+		#current_path = DIR_IMG + filename
+		#image = cv2.imread(current_path)
+		image_org = cv2.imread(DIR_DATA + line[0].strip())
+		img_left_org = cv2.imread(DIR_DATA + line[1].strip())
+		img_right_org = cv2.imread(DIR_DATA + line[2].strip())
+		
+		image = process_image(image_org)
+		img_left = process_image(img_left_org)
+		img_right = process_image(img_right_org)		
+
+		images.extend([image, img_left, img_right])
+		#images.append(image)
+		#images.append(img_left)
+		#images.append(img_right)
+		
+		measurement = float(line[3])
+		correction = 0.2 # this is a parameter to tune
+		steering_left = measurement + correction
+		steering_right = measurement - correction
+		
+		#measurements.append(measurement)
+		#measurements.append(steering_left)
+		#measurements.append(steering_right)
+		measurements.extend([measurement, steering_left, steering_right])
+		
+		image_flipped = np.fliplr(image)
+		measurement_flipped = -measurement
+		images.append(image_flipped)	
+		measurements.append(measurement_flipped)		
+	
 	x_train = np.array(images)
 	y_train = np.array(measurements)
 	return x_train, y_train
 
 
-	
 
 def loadWithMultipleCameras(rows):  
 	car_images = []
@@ -106,45 +161,31 @@ def loadWithMultipleCameras(rows):
 		steering_left = steering_center + correction
 		steering_right = steering_center - correction			
 		
-		#img_center = process_image(np.asarray(cv2.imread(DIR_DATA + row[0])))
-		#img_left = process_image(np.asarray(cv2.imread(DIR_DATA + row[1])))
-		#img_right = process_image(np.asarray(cv2.imread(DIR_DATA + row[2])))
+		#img_center = process_image(np.asarray(cv2.imread(DIR_DATA + row[0].strip())))
+		#img_left = process_image(np.asarray(cv2.imread(DIR_DATA + row[1].strip())))
+		#img_right = process_image(np.asarray(cv2.imread(DIR_DATA + row[2].strip())))
 		
-		img_center = cv2.imread(DIR_DATA + row[0])
-		img_left = cv2.imread(DIR_DATA + row[1])
-		img_right = cv2.imread(DIR_DATA + row[2])
+		img_center = cv2.imread(DIR_DATA + row[0].strip())
+		img_left = cv2.imread(DIR_DATA + row[1].strip())
+		img_right = cv2.imread(DIR_DATA + row[2].strip())
 		
-		
-		#gray_img_center = cv2.cvtColor(img_center, cv2.COLOR_RGB2GRAY)
-		#gray_img_left = cv2.cvtColor(img_left, cv2.COLOR_RGB2GRAY)
-		#gray_img_right = cv2.cvtColor(img_right, cv2.COLOR_RGB2GRAY)
-		
-		#gray_img_center = gray_img_center_org.copy()
-		#gray_img_left = gray_img_left_org.copy()
-		#gray_img_right = gray_img_right_org.copy()		
-		
-		#gray_img_center = cv2.equalizeHist(gray_img_center[:,:,0])
-		#gray_img_left = cv2.equalizeHist(gray_img_left[:,:,0])
-		#gray_img_right = cv2.equalizeHist(gray_img_right[:,:,0])
+		image = process_image(img_center)
+		img_left = process_image(img_left)
+		img_right = process_image(img_right)		
     
 		# add images and angles to data set
-		car_images.extend(img_center, img_left, img_right)
-		#car_images.extend(gray_img_center, gray_img_left, gray_img_right)
-		steering_angles.extend(steering_center, steering_left, steering_right)
+		car_images.extend([img_center, img_left, img_right])
+		steering_angles.extend([steering_center, steering_left, steering_right])
 		
 		img_center_flipped = np.fliplr(img_center)
 		img_left_flipped = np.fliplr(img_left)
-		img_right_flipped = np.fliplr(img_right)
-		
-		#img_center_flipped = np.fliplr(gray_img_center)
-		#img_left_flipped = np.fliplr(gray_img_left)
-		#img_right_flipped = np.fliplr(gray_img_right)		
+		img_right_flipped = np.fliplr(img_right)		
 		
 		steering_center_flipped = -steering_center
-		steering_left_flipped = -steering_center - correction
-		steering_right_flipped = -steering_center + correction
-		car_images.extend(img_center_flipped, img_left_flipped, img_right_flipped)
-		steering_angles.extend(steering_center_flipped, steering_left_flipped, steering_right_flipped)	
+		#steering_left_flipped = -steering_center - correction
+		#steering_right_flipped = -steering_center + correction
+		car_images.append(img_center_flipped)#, img_left_flipped, img_right_flipped])
+		steering_angles.append(steering_center_flipped)#, steering_left_flipped, steering_right_flipped])	
 
 	x_train = np.array(car_images)
 	y_train = np.array(steering_angles)
@@ -181,7 +222,7 @@ def build():
 	model.add(Dense(1))
 	return model
 
-def buildNVIDEA():
+def buildNVIDEA(keep_prob=0.5):
 	model = Sequential()
 	model.add(Lambda(lambda x: x / 255.0 -0.5,input_shape=(160, 320, IMG_DIM)))
 	model.add(Cropping2D(cropping=((70,25),(0,0))))
@@ -190,7 +231,7 @@ def buildNVIDEA():
 	model.add(Convolution2D(48,5,5, subsample=(2,2), activation="relu"))
 	model.add(Convolution2D(64,3,3, activation="relu"))
 	model.add(Convolution2D(64,3,3, activation="relu"))
-	model.add(Dropout(0.5))
+	model.add(Dropout(keep_prob))
 	model.add(Flatten())	
 	model.add(Dense(100))
 	model.add(Dense(50))
@@ -260,14 +301,19 @@ def generator(samples, batch_size=32):
 				# create adjusted steering measurements for the side camera images
 				correction = 0.2 # this is a parameter to tune
 				steering_left = steering_center + correction
-				steering_right = steering_center - correction			
-				img_center = process_image(np.asarray(cv2.imread(DIR_DATA + row[0])))
-				img_left = process_image(np.asarray(cv2.imread(DIR_DATA + row[1])))
-				img_right = process_image(np.asarray(cv2.imread(DIR_DATA + row[2])))
+				steering_right = steering_center - correction
+				
+				img_center = cv2.imread(DIR_DATA + row[0].strip())
+				img_left = cv2.imread(DIR_DATA + row[1].strip())
+				img_right = cv2.imread(DIR_DATA + row[2].strip())
+				
+				img_center = process_image(img_center)
+				img_left = process_image(img_left)
+				img_right = process_image(img_right)				
 			    
 				# add images and angles to data set
-				car_images.extend(img_center, img_left, img_right)
-				steering_angles.extend(steering_center, steering_left, steering_right)
+				car_images.extend([img_center, img_left, img_right])
+				steering_angles.extend([steering_center, steering_left, steering_right])
 			    
 				img_center_flipped = np.fliplr(img_center)
 				img_left_flipped = np.fliplr(img_left)
@@ -275,11 +321,11 @@ def generator(samples, batch_size=32):
 				steering_center_flipped = -steering_center
 				steering_left_flipped = -steering_center - correction
 				steering_right_flipped = -steering_center + correction
-				car_images.extend(img_center_flipped, img_left_flipped, img_right_flipped)
-				steering_angles.extend(steering_center_flipped, steering_left_flipped, steering_right_flipped)
-		x_train = np.array(car_images)
-		y_train = np.array(steering_angles)
-		yield sklearn.utils.shuffle(X_train, y_train)
+				car_images.extend([img_center_flipped])#, img_left_flipped, img_right_flipped])
+				steering_angles.extend([steering_center_flipped])#, steering_left_flipped, steering_right_flipped])
+			x_train = np.array(car_images)
+			y_train = np.array(steering_angles)
+			yield sklearn.utils.shuffle(x_train, y_train)
 		
 def generatorPre(samples, batch_size=32):
     num_samples = len(samples)
@@ -302,6 +348,10 @@ def generatorPre(samples, batch_size=32):
             y_train = np.array(angles)
             yield sklearn.utils.shuffle(X_train, y_train)
 	    
+def visualize_model(model, file_name="model.png"):
+	from keras.utils.visualize_util import plot
+	plot(model, to_file=file_name, show_shapes=True)	
+	    
 ##################################
 # Main Logic
 ##################################
@@ -310,20 +360,24 @@ samples = getLog()
 from sklearn.model_selection import train_test_split
 train_samples, validation_samples = train_test_split(samples, test_size=0.2)
 
-# compile and train the model using the generator function
-#train_generator = generator(train_samples, batch_size=BATCH_SIZE)#32)
-#validation_generator = generator(validation_samples, batch_size=BATCH_SIZE)#32)
 
-x_train, y_train = load(train_samples)
-x_test, y_test = load(validation_samples)
-#x_train, y_train = loadWithMultipleCameras(train_samples)
-#x_test, y_test = loadWithMultipleCameras(validation_samples)
+
+#x_train, y_train = load(train_samples)
+#x_test, y_test = load(validation_samples)
+
+#x_train, y_train = loadWithFlipImage(train_samples)
+#x_test, y_test = loadWithFlipImage(validation_samples)
+
+"""
+x_train, y_train = loadWithMultipleCameras(train_samples)
+x_test, y_test = loadWithMultipleCameras(validation_samples)
 
 print("x_train.shape",x_train.shape)
 print("y_train.shape",y_train.shape)
+"""
 
 #model = build()
-model = buildNVIDEA()
+model = buildNVIDEA(keep_prob=0.5)
 #model = buildForGenerator()
 #model.compile(loss='mse', optimizer='adam')
 #model.fit(x_train, y_train, validation_split=0.2, shuffle=True, nb_epoch=NB_EPOCH)
@@ -332,12 +386,27 @@ model = buildNVIDEA()
 #model = LeNet.build(input_shape=INPUT_SHAPE, classes=NB_CLASSES)
 model.compile(loss='mse', optimizer='adam')#"categorical_crossentropy", optimizer=OPTIMIZER,
 	#metrics=["accuracy"])
-history_object = model.fit(x_train, y_train, 
-		batch_size=BATCH_SIZE, nb_epoch=NB_EPOCH, #epochs=NB_EPOCH, 
-		verbose=VERBOSE, validation_split=VALIDATION_SPLIT, shuffle=True)
-#history_object = model.fit_generator(train_generator, samples_per_epoch=len(train_samples),
-#                                     validation_data=validation_generator, nb_val_samples=len(validation_samples),
-#                                     nb_epoch=NB_EPOCH)
+
+USE_GENERATOR = False
+if USE_GENERATOR:
+	# compile and train the model using the generator function
+	train_generator = generator(train_samples, batch_size=BATCH_SIZE)#32)
+	validation_generator = generator(validation_samples, batch_size=BATCH_SIZE)#32)
+	history_object = model.fit_generator(train_generator, samples_per_epoch=len(train_samples),
+		                             validation_data=validation_generator, nb_val_samples=len(validation_samples),
+		                             nb_epoch=NB_EPOCH)
+else:
+	x_train, y_train = loadWithMultipleCameras(train_samples)
+	x_test, y_test = loadWithMultipleCameras(validation_samples)
+	
+	print("x_train.shape",x_train.shape)
+	print("y_train.shape",y_train.shape)	
+	history_object = model.fit(x_train, y_train, 
+		        batch_size=BATCH_SIZE, nb_epoch=NB_EPOCH, #epochs=NB_EPOCH, 
+		        verbose=VERBOSE, validation_split=VALIDATION_SPLIT, shuffle=True)	
+"""
+ValueError: output of generator should be a tuple (x, y, sample_weight) or (x, y). Found: None
+"""
 
 #score = model.evaluate(x_test, y_test, verbose=VERBOSE)
 #score = model.evaluate(x_train, y_train, verbose=VERBOSE)
@@ -349,3 +418,4 @@ showHistory(history_object)
 
 model.save('model.h5')
 
+visualize_model(model)
