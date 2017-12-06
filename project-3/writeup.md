@@ -36,23 +36,23 @@ The model.py file contains the code for training and saving the convolution neur
 
 #### 1. An appropriate model architecture has been employed
 
-My model is a convolution neural network introduced by NVIDEA (model.py 'build_model' function) 
+My model is a convolution neural network constructed based on the model designed by NVIDEA 
 The model includes RELU layers to introduce nonlinearity, and the data is normalized in the model using a Keras lambda layers. 
 For details about the model, see the next section.
 
 #### 2. Attempts to reduce overfitting in the model
 
-The model contains dropout layers in order to reduce overfitting (model.py 'build_model' function). 
+The model contains dropout layers in order to reduce overfitting. 
 
 The model was trained and validated on different data sets to ensure that the model was not overfitting using Keras 'validation_split' parameter of 'fit' function of model. The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
 
 #### 3. Model parameter tuning
 
-The model used an adam optimizer, so the learning rate was not tuned manually (model.py 'build_model' function).
+The model used an adam optimizer, so the learning rate was not tuned manually.
 
 #### 4. Appropriate training data
 
-Training data was chosen to keep the vehicle driving on the road. I used a combination of center lane driving, recovering from the left and right sides of the road ... 
+Training data was chosen to keep the vehicle driving on the road.
 
 For details about how I created the training data, see the next section. 
 
@@ -60,9 +60,7 @@ For details about how I created the training data, see the next section.
 
 #### 1. Solution Design Approach
 
-The overall strategy for deriving a model architecture was to ...
-
-My first step was to use a convolution neural network model similar to the LeNet I thought this model might work because it is a fairly complex model.
+My first step was to use a convolution neural network model similar to the LeNet as the one that I have a track record to use for the previous project.
 
 In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set. I found that my first model had a low mean squared error on the training set but a high mean squared error on the validation set. This implied that the model was overfitting.
 
@@ -73,7 +71,7 @@ There were a few spots where the vehicle fell off the track. To improve the driv
 * Histogram Equalization to be applied to the training images for
 future value optimization
 
-* Gray-scale in the model to change the dimension  for calculation improvement
+* Transformation from RGB to Gray-scale in the model to reduce the dimension  for calculation improvement
 
 In my observation, histogram equalization contributed the training significantly.
 
@@ -81,7 +79,7 @@ At the end of the process, the vehicle is able to drive autonomously around the 
 
 #### 2. Final Model Architecture
 
-The final model architecture (model.py: "build_model" function, lines 101-117) consisted of the following layers:
+The final model architecture (model.py: "build_model" function) consisted of the following layers:
 
 | Layer         	|     Description		        	| 
 |:---------------------:|:---------------------------------------------:| 
@@ -106,19 +104,24 @@ The final model architecture (model.py: "build_model" function, lines 101-117) c
 To train my model I used the provided training data with augmenting it.
 
 Here is the ways that I augmented data:
-* Flipping the image and measurement
-* Using right and left images by multiple cameras
+* Flipping the image and steering angle
+* Using right and left images by multiple cameras and adjusted steering angle
 
 I put 20 % of the data into a test set.
 I randomly shuffled the data set and put 20% of the data into a validation set using Keras parameter during epochs.
+
 Each number of data set is below:
-* 20569 samples, validate on 5143 samples
-* 6432 for test
+* 20569 samples for training (validate on 5143 samples)
+* 6432 samples for test
 
 I used this training data for training the model.
 The validation set helped determine if the model was over or under fitting. I utilized Keras's EearlyStopping callback to stop the training.
 
 With my model and training data, the ideal number of epochs was 2 as shown below.
+
+* Epoch 1 loss: 0.0194 - val_loss: 0.0141 
+* Epoch 2 loss: 0.0146 - val_loss: 0.0127
+* Epoch 3 loss: 0.0135 - val_loss: 0.0129
 
 ![](./images/graph.png)
 

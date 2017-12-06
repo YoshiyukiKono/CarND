@@ -23,7 +23,7 @@ DIR_DATA = "./data/"
 DRIVING_LOG = './data/driving_log.csv'
 
 # network and training
-NB_EPOCH = 8#3#8#6#4# 2#10# 4 #7#20
+NB_EPOCH = 8
 BATCH_SIZE = 128
 VERBOSE = 1
 VALIDATION_SPLIT=0.2
@@ -70,8 +70,7 @@ def get_data_pair(rows):
 		img_left = cv2.imread(DIR_DATA + row[1].strip())
 		img_right = cv2.imread(DIR_DATA + row[2].strip())
 		
-		#!!!!!!!!!!!!!image = process_image(img_center)
-		#img_center = process_image(img_center)
+		img_center = process_image(img_center)
 		img_left = process_image(img_left)
 		img_right = process_image(img_right)		
     
@@ -84,10 +83,8 @@ def get_data_pair(rows):
 		img_right_flipped = np.fliplr(img_right)		
 		
 		steering_center_flipped = -steering_center
-		#steering_left_flipped = -steering_center - correction
-		#steering_right_flipped = -steering_center + correction
-		car_images.append(img_center_flipped)#, img_left_flipped, img_right_flipped])
-		steering_angles.append(steering_center_flipped)#, steering_left_flipped, steering_right_flipped])	
+		car_images.append(img_center_flipped)
+		steering_angles.append(steering_center_flipped)	
 
 	x_train = np.array(car_images)
 	y_train = np.array(steering_angles)
@@ -153,6 +150,5 @@ if __name__ == '__main__':
 	model.save('model.h5')
 	score = model.evaluate(x_test, y_test, verbose=VERBOSE)
 	print("Score:", score)
-	#print('Test accuracy:', score[1])
 	
 	display_graph(history_object) 
