@@ -36,7 +36,7 @@ The model.py file contains the code for training and saving the convolution neur
 
 #### 1. An appropriate model architecture has been employed
 
-My model is a convolution neural network constructed based on the model designed by NVIDEA 
+My model is a convolution neural network constructed based on the model designed by NVIDEA.
 The model includes RELU layers to introduce nonlinearity, and the data is normalized in the model using a Keras lambda layers. 
 For details about the model, see the next section.
 
@@ -44,11 +44,11 @@ For details about the model, see the next section.
 
 The model contains dropout layers in order to reduce overfitting. 
 
-The model was trained and validated on different data sets to ensure that the model was not overfitting using Keras 'validation_split' parameter of 'fit' function of model. The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
+The model was trained and validated on different data sets to ensure that the model was not overfitting using Keras function. The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
 
 #### 3. Model parameter tuning
 
-The model used an adam optimizer, so the learning rate was not tuned manually.
+The model used an adam optimizer, so the learning rate is not tuned manually.
 
 #### 4. Appropriate training data
 
@@ -66,14 +66,14 @@ In order to gauge how well the model was working, I split my image and steering 
 
 Then I switched my model from LeNet to the one designed by NVIDEA, which is introduced in Udacity course.
 
-There were a few spots where the vehicle fell off the track. To improve the driving behavior in these cases, I modified my model as follows
+There were a few spots where the vehicle fell off the track. To improve the driving behavior in these cases, I modified my model as follows:
 
 * Histogram Equalization to be applied to the training images for
-future value optimization
+feature value optimization
 
 * Transformation from RGB to Gray-scale in the model to reduce the dimension  for calculation improvement
 
-In my observation, histogram equalization contributed the training significantly.
+In my observation, histogram equalization contributed significantly.
 
 At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
 
@@ -101,7 +101,7 @@ The final model architecture (model.py: "build_model" function) consisted of the
 
 #### 3. Creation of the Training Set & Training Process
 
-To train my model I used the provided training data with augmenting it.
+To train my model I utilized the provided training data with augmenting it.
 
 Here is the ways that I augmented data:
 * Flipping the image and steering angle
@@ -115,7 +115,7 @@ Each number of data set is below:
 * 6432 samples for test
 
 I used this training data for training the model.
-The validation set helped determine if the model was over or under fitting. I utilized Keras's EearlyStopping callback to stop the training.
+The validation set helped determine if the model was over or under fitting. I utilized Keras's EearlyStopping callback to judge when the training should be stopped.
 
 With my model and training data, the ideal number of epochs was 2 as shown below.
 
