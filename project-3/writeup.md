@@ -73,7 +73,7 @@ feature value optimization
 
 * Transformation from RGB to Gray-scale in the model to reduce the dimension  for calculation improvement
 
-In my observation, histogram equalization contributed significantly.When applying the transformation to the left and right angle images only, I got the best result.
+In my observation, histogram equalization contributed significantly. When applying the transformation to the left and right angle images only, I got the best result.
 
 The sample images are below.
 
@@ -129,7 +129,7 @@ Here is the ways that I augmented data:
 ![left angle image(after histgram equalization)](./sample_images/img_right_processed.jpg)
 
 I put 20 % of the data into a test set.
-I randomly shuffled the data set and put 20% of the data into a validation set using Keras parameter during epochs.
+I randomly shuffled the data set and put 20% of the data into a validation set using two different generators for training and validation.
 
 Each number of data set is below:
 * 25712 samples for training (validate on 6432 samples)
