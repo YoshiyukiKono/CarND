@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 import sklearn
 import tensorflow as tf
+from PIL import Image
 
 # import the necessary Keras packages
 from keras import backend as K
@@ -21,6 +22,7 @@ import keras
 
 DIR_DATA = "./data/"
 DRIVING_LOG = './data/driving_log.csv'
+DIR_SAMPLE_IMAGES = "./sample_images/"
 
 # network and training
 NB_EPOCH = 8
@@ -53,6 +55,46 @@ def process_image(image):
 	processed_image = equalize_histogram(image)
 	return processed_image
 
+def save_image(img, path):
+	"""save a image file"""
+	Image.fromarray(img).save(path)
+
+def save_sample_images(row) :
+	"""save sample images used for training"""
+	img_center = np.asarray(Image.open(DIR_DATA + row[0].strip()))
+	img_left = np.asarray(Image.open(DIR_DATA + row[1].strip()))
+	img_right = np.asarray(Image.open(DIR_DATA + row[2].strip()))
+	
+	image_flipped = np.fliplr(img_center)
+	
+	img_center_processed = process_image(img_center)
+	img_left_processed = process_image(img_left)
+	img_right_processed = process_image(img_right)	
+
+	save_image(img_center, DIR_SAMPLE_IMAGES + 'img_center.jpg')
+	save_image(img_left, DIR_SAMPLE_IMAGES + 'img_left.jpg')
+	save_image(img_right, DIR_SAMPLE_IMAGES + 'img_right.jpg')		
+	save_image(image_flipped, DIR_SAMPLE_IMAGES + 'image_flipped.jpg')	
+
+	save_image(img_center_processed,DIR_SAMPLE_IMAGES + 'img_center_processed.jpg')
+	save_image(img_left_processed,DIR_SAMPLE_IMAGES + 'img_left_processed.jpg')
+	save_image(img_right_processed,DIR_SAMPLE_IMAGES + 'img_right_processed.jpg')	
+
+def get_data_pair_for_validation(rows):
+	"""load data set from training logs for validation (simulating prediction for which plain data is used)"""
+	car_images = []
+	steering_angles = []
+	for row in rows:
+		
+		steering_center = float(row[3])
+		img_center = np.asarray(Image.open(DIR_DATA + row[0].strip()))
+
+		car_images.append(img_center)
+		steering_angles.append(steering_center)
+
+	x_train = np.array(car_images)
+	y_train = np.array(steering_angles)
+	return x_train, y_train
 
 def get_data_pair(rows):
 	"""load data set from training logs"""
@@ -66,25 +108,27 @@ def get_data_pair(rows):
 		steering_left = steering_center + correction
 		steering_right = steering_center - correction			
 		
-		img_center = cv2.imread(DIR_DATA + row[0].strip())
-		img_left = cv2.imread(DIR_DATA + row[1].strip())
-		img_right = cv2.imread(DIR_DATA + row[2].strip())
+		#img_center = cv2.imread(DIR_DATA + row[0].strip())
+		#img_left = cv2.imread(DIR_DATA + row[1].strip())
+		#img_right = cv2.imread(DIR_DATA + row[2].strip())
+		img_center = np.asarray(Image.open(DIR_DATA + row[0].strip()))
+		img_left = np.asarray(Image.open(DIR_DATA + row[1].strip()))
+		img_right = np.asarray(Image.open(DIR_DATA + row[2].strip()))	
 		
-		img_center = process_image(img_center)
+		#img_center = process_image(img_center)
 		img_left = process_image(img_left)
-		img_right = process_image(img_right)		
+		img_right = process_image(img_right)			
     
 		# add images and angles to data set
 		car_images.extend([img_center, img_left, img_right])
 		steering_angles.extend([steering_center, steering_left, steering_right])
-		
-		img_center_flipped = np.fliplr(img_center)
-		img_left_flipped = np.fliplr(img_left)
-		img_right_flipped = np.fliplr(img_right)		
+				
+		img_center_flipped = np.fliplr(img_center)		
 		
 		steering_center_flipped = -steering_center
-		car_images.append(img_center_flipped)
-		steering_angles.append(steering_center_flipped)	
+		
+		car_images.extend([img_center_flipped])
+		steering_angles.extend([steering_center_flipped])	
 
 	x_train = np.array(car_images)
 	y_train = np.array(steering_angles)
@@ -130,8 +174,9 @@ def display_graph(history_object) :
 	plt.legend(['training set', 'validation set'], loc='upper right')
 	plt.show()
 
-if __name__ == '__main__':
-	
+
+def gen_trained_model():
+	"""generate a trained model without using generator"""
 	samples = get_logs(DRIVING_LOG)
 
 	from sklearn.model_selection import train_test_split
@@ -141,7 +186,8 @@ if __name__ == '__main__':
 	model.compile(loss='mse', optimizer='adam')
 
 	x_train, y_train = get_data_pair(train_samples)
-	x_test, y_test = get_data_pair(test_samples)
+	#x_test, y_test = get_data_pair(test_samples)
+	x_test, y_test = get_data_pair_for_validation(test_samples)
 		
 	history_object = model.fit(x_train, y_train, 
 		        batch_size=BATCH_SIZE, nb_epoch=NB_EPOCH, 
@@ -152,3 +198,54 @@ if __name__ == '__main__':
 	print("Score:", score)
 	
 	display_graph(history_object) 
+
+def generator(samples, batch_size=32):
+	"""create a generator"""
+	num_samples = len(samples)
+	while 1: # Loop forever so the generator never terminates
+		for offset in range(0, num_samples, batch_size):
+			batch_samples = samples[offset:offset+batch_size]
+			x, y = get_data_pair(batch_samples)
+			yield sklearn.utils.shuffle(x, y)
+
+def generator_for_validation(samples, batch_size=32):
+	"""create a generator for validation (simulating prediction for which plain data is used)"""
+	num_samples = len(samples)
+	while 1: # Loop forever so the generator never terminates
+		for offset in range(0, num_samples, batch_size):
+			batch_samples = samples[offset:offset+batch_size]
+			x, y = get_data_pair_for_validation(batch_samples)
+			yield sklearn.utils.shuffle(x, y)
+
+def gen_trained_model_w_generator():
+	"""Generate a trained model using generator"""
+	samples = get_logs(DRIVING_LOG)
+	
+	save_sample_images(samples[0])
+
+	from sklearn.model_selection import train_test_split
+	train_samples, validation_samples = train_test_split(samples, test_size=0.2)
+
+	model = build_model(keep_prob=0.5)
+	model.compile(loss='mse', optimizer='adam')
+
+	train_generator = generator(train_samples, batch_size=BATCH_SIZE)
+	validation_generator = generator_for_validation(validation_samples, batch_size=BATCH_SIZE)
+	for i in range(3):
+		X_batch, y_batch = next(train_generator)
+		print(X_batch.shape, y_batch.shape)
+	NB_AUG = 4
+	history_object = model.fit_generator(train_generator, samples_per_epoch=len(train_samples)*NB_AUG, 
+	                                     validation_data=validation_generator, nb_val_samples=len(validation_samples), 
+	                                     nb_epoch=NB_EPOCH,callbacks=[EarlyStopping()])	
+
+	model.save('model.h5')
+	x_test, y_test = get_data_pair(validation_samples)
+	score = model.evaluate(x_test, y_test, verbose=VERBOSE)
+	print("Score:", score)
+	
+	display_graph(history_object) 	
+	
+if __name__ == '__main__':
+	gen_trained_model_w_generator()
+	

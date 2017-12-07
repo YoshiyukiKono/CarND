@@ -73,9 +73,25 @@ feature value optimization
 
 * Transformation from RGB to Gray-scale in the model to reduce the dimension  for calculation improvement
 
-In my observation, histogram equalization contributed significantly.
+In my observation, histogram equalization contributed significantly.When applying the transformation to the left and right angle images only, I got the best result.
+
+The sample images are below.
+
+![](./sample_images/img_left_processed.jpg)
+![](./sample_images/img_right_processed.jpg)
 
 At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
+
+However, although the drive through the track 1 is smooth overall, but the car is touching the lane at few positions on the road. It was suggested by the reviewer when I submitted my project for the first time.
+
+Taking into account the reviewer's suggestions, I changed my model as follows:
+
+* Correct the confusion of RGB and BGR in my code
+* Use Generator
+
+To correct the first confusion, I stopped using opencv to read the images because it reads images as BGR format, and changed to use PIL that is used in drive.py and reads images as RGB. I didn't change the model where RGB is expected.
+
+When I added generator to my code, I changed how to treat test and validation data set. I was using the same function for these data set and training data set, but I thought that validation and test data set must be similar to the data set used for prediction and the left and right angle images and transformed images should not be used for the purpose.
 
 #### 2. Final Model Architecture
 
@@ -107,27 +123,34 @@ Here is the ways that I augmented data:
 * Flipping the image and steering angle
 * Using right and left images by multiple cameras and adjusted steering angle
 
+![original image](./sample_images/img_center.jpg)
+![flipped image](./sample_images/image_flipped.jpg)
+![right angle image(after histgram equalization)](./sample_images/img_right_processed.jpg)
+![left angle image(after histgram equalization)](./sample_images/img_right_processed.jpg)
+
 I put 20 % of the data into a test set.
 I randomly shuffled the data set and put 20% of the data into a validation set using Keras parameter during epochs.
 
 Each number of data set is below:
-* 20569 samples for training (validate on 5143 samples)
+* 25712 samples for training (validate on 6432 samples)
 * 6432 samples for test
 
 I used this training data for training the model.
 The validation set helped determine if the model was over or under fitting. I utilized Keras's EearlyStopping callback to judge when the training should be stopped.
 
-With my model and training data, the ideal number of epochs was 2 as shown below.
+With my model and training data, the ideal number of epochs was 4 (almost similar to the 3rd epoch though) as shown below.
 
-* Epoch 1 loss: 0.0194 - val_loss: 0.0141 
-* Epoch 2 loss: 0.0146 - val_loss: 0.0127
-* Epoch 3 loss: 0.0135 - val_loss: 0.0129
+* Epoch 1 loss: 0.0201 - val_loss: 0.0106 
+* Epoch 2 loss: 0.0144 - val_loss: 0.0097
+* Epoch 3 loss: 0.0133 - val_loss: 0.0093
+* Epoch 4 loss: 0.0125 - val_loss: 0.0092
+* Epoch 5 loss: 0.0121 - val_loss: 0.0093
 
 ![](./images/graph.png)
 
 The loss score of the test data set is below:
 
-Score: 0.012020876879
+Score: 0.0118042428008
 
 
 
