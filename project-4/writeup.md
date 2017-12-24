@@ -143,8 +143,12 @@ Here's a [link to my challenge video result](./output_images/challenge_video_out
 
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-First,I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail.
+First,I'll talk about the approach I took. I was checking my pipeline using challenge_video.mp4 from the very beggining of the pipeline improvement, so that I was aware of problematic results.
 
+My pipeline at the ealiest stage, which was implemented without the strategy to have two different functions to find lines, failed to process the images having the cracks on the center of the lane. 
+Also, I faced the situation that my pipeline failed to process the images under the bridge. 
 
+Then, I added another function to use the result of the previous lane search when finding lines.
+I also started to use averaged polynomial coefficients and remove outlier data.
 
 Regarding how I might improve it if I were going to pursue this project further, I like to consider how to use historical records to get better result, for example, how many times to keep the results of latest iterations to calculate the average, and what is the best way to eliminate outlier data.
