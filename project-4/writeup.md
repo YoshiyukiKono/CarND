@@ -1,9 +1,3 @@
-## Writeup Template
-
-### You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
-
----
-
 **Advanced Lane Finding Project**
 
 The goals / steps of this project are the following:
@@ -19,8 +13,7 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 
-![](./writeup_images/chess_dist.png)
-![](./writeup_images/lane_dist.png)
+
 
 [image1]: ./examples/undistort_output.png "Undistorted"
 [image2]: ./test_images/test1.jpg "Road Transformed"
@@ -46,43 +39,42 @@ You're reading it!
 
 #### 1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
 
-The code for this step is contained in the first code cell of the IPython notebook located in "./Advanced_Lane_Lines.ipynb".  
+The code for this step is contained from the 6th to the 10th code cells of the IPython notebook located in "./Advanced_Lane_Lines.ipynb".  
 
 I start by preparing "object points", which will be the (x, y, z) coordinates of the chessboard corners in the world. Here I am assuming the chessboard is fixed on the (x, y) plane at z=0, such that the object points are the same for each calibration image.  Thus, `objp` is just a replicated array of coordinates, and `objpoints` will be appended with a copy of it every time I successfully detect all chessboard corners in a test image.  `imgpoints` will be appended with the (x, y) pixel position of each of the corners in the image plane with each successful chessboard detection.  
 
 I then used the output `objpoints` and `imgpoints` to compute the camera calibration and distortion coefficients using the `cv2.calibrateCamera()` function.  I applied this distortion correction to the test image using the `cv2.undistort()` function and obtained this result: 
 
-![alt text][image1]
+![](./writeup_images/chess_dist.png)
 
 ### Pipeline (single images)
 
 #### 1. Provide an example of a distortion-corrected image.
 
 To demonstrate this step, I will describe how I apply the distortion correction to one of the test images like this one:
-![alt text][image2]
+
+![](./writeup_images/lane_dist.png)
 
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
-I used a combination of color and gradient thresholds to generate a binary image (thresholding steps at lines # through # in "./Advanced_Lane_Lines.ipynb").  Here's an example of my output for this step.
+I used a combination of color and gradient thresholds to generate a binary image (from the 11th to the 13th code cells of the "./Advanced_Lane_Lines.ipynb").  Here's an example of my output for this step.
 
-![alt text][image3]
+![](./writeup_images/thres_bin.png)
 
 #### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
 
-The code for my perspective transform includes a function called `warp_pipeline()`, which appears in the XXXrd code cell of the "./Advanced_Lane_Lines.ipynb".  The `warp_pipeline()` function takes as inputs an image (`img`), as well as source (`src`) and destination (`dst`) points.  I chose the hardcode the source and destination points in the following manner:
+The code for my perspective transform includes a function called `pipeline_warp()`, which appears in the 15th code cell of the "./Advanced_Lane_Lines.ipynb".  The `pipeline_warp()` function takes as inputs an image (`image`), and source (`src`) and destination (`dst`) points are defined in the function.  I chose the hardcode the source and destination points in the following manner:
 
 ```python
-Y_TOP = 435
 Y_BTM = 668
 
 X_CTR = 640 # 1280/2
 
-X_TOP_WDT = 48
+X_TOP_WDT = 120
 X_BTM_WDT = 1000
 
-# less space is used
-Y_TOP = 450
-X_TOP_WDT = 120
+Y_TOP = 460
+X_TOP_WDT = 150
 
 TOP_LEFT = (X_CTR - X_TOP_WDT/2 , Y_TOP)
 TOP_RIGHT = (X_CTR + X_TOP_WDT/2, Y_TOP)
@@ -97,7 +89,7 @@ img_size = (image.shape[1], image.shape[0])
 w = img_size[1]
 h = img_size[1]
 offsetY = 0
-offsetX = 50#30
+offsetX = 50
 dst = np.float32([[offsetX, offsetY], [w - offsetX, offsetY], 
                       [w - offsetX, h - offsetY],
                       [offsetX, h - offsetY]])
@@ -112,26 +104,28 @@ This resulted in the following source and destination points:
 | 1140,   668     | 670,  720      |
 | 140,   668      | 50,  720        |
 
-
 I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image.
 
-![alt text][image4]
+![](./writeup_images/compare_src_dst.png)
 
 #### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
 
-Then I did some other stuff and fit my lane lines with a 2nd order polynomial kinda like this:
 
-![alt text][image5]
+Then, in the 27th code cell of the "./Advanced_Lane_Lines.ipynb", I did some other stuff and fit my lane lines with a 2nd order polynomial kinda like this:
+
+![](./writeup_images/poly.png)
 
 #### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
-I did this in the XXXrd code cell of the "./Advanced_Lane_Lines.ipynb"
+I did the calculation of the radius of curvature of the lane in the 19th code cell of the "./Advanced_Lane_Lines.ipynb".
+
+The position of the vehicle with respect to center is treated in the 18th code cell of the "./Advanced_Lane_Lines.ipynb".
 
 #### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 
-I implemented this step in the XXXrd code cell of the "./Advanced_Lane_Lines.ipynb" in the function `XXX_lane()`.  Here is an example of my result on a test image:
+I implemented this step in the 26th code cell of the "./Advanced_Lane_Lines.ipynb" in the function `project_lane()` of the class `LaneProjector()`.  Here is an example of my result on a test image:
 
-![alt text][image6]
+![](./writeup_images/lane_proj.png)
 
 ---
 
