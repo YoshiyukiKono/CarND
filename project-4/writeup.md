@@ -13,14 +13,14 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 
-![image1]:./writeup_images/chess_dist.png "Undistorted"
-![image2]:./writeup_images/lane_dist.png "Road Transformed"
-![image3]:./writeup_images/thres_bin.png "Binary Example"
-![image4]:./writeup_images/compare_src_dst.png "Warp Example"
-![image5]:./writeup_images/poly.png "Fit Visual"
-![image6]:./writeup_images/lane_proj.png "Plotted Down Output Example"
-[video1]:./project_video_output.mp4 "Project Output"
-[video2]:./challenge_video_output.mp4 "Challenge Output"
+[image1](./writeup_images/chess_dist.png) "Undistorted"
+[image2](./writeup_images/lane_dist.png) "Road Transformed"
+[image3](./writeup_images/thres_bin.png) "Binary Example"
+[image4](./writeup_images/compare_src_dst.png) "Warp Example"
+[image5](./writeup_images/poly.png) "Fit Visual"
+[image6](./writeup_images/lane_proj.png) "Plotted Down Output Example"
+[video1](./project_video_output.mp4) "Project Output"
+[video2](./challenge_video_output.mp4) "Challenge Output"
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/571/view) Points
 
