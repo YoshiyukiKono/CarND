@@ -13,15 +13,14 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 
-
-
-[image1]: ./examples/undistort_output.png "Undistorted"
-[image2]: ./test_images/test1.jpg "Road Transformed"
-[image3]: ./examples/binary_combo_example.jpg "Binary Example"
-[image4]: ./examples/warped_straight_lines.jpg "Warp Example"
-[image5]: ./examples/color_fit_lines.jpg "Fit Visual"
-[image6]: ./examples/example_output.jpg "Output"
-[video1]: ./project_video.mp4 "Video"
+![image1]:./writeup_images/chess_dist.png "Undistorted"
+![image2]:./writeup_images/lane_dist.png "Road Transformed"
+![image3]:./writeup_images/thres_bin.png "Binary Example"
+![image4]:./writeup_images/compare_src_dst.png "Warp Example"
+![image5]:./writeup_images/poly.png "Fit Visual"
+![image6]:./writeup_images/lane_proj.png "Plotted Down Output Example"
+[video1]:./project_video_output.mp4 "Project Output"
+[video2]:./challenge_video_output.mp4 "Challenge Output"
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/571/view) Points
 
@@ -133,9 +132,9 @@ I implemented this step in the 26th code cell of the "./Advanced_Lane_Lines.ipyn
 
 #### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
 
-Here's a [link to my video result](./output_images/project_video_output.mp4)
+Here's a [link to my video result](./project_video_output.mp4)
 
-Here's a [link to my challenge video result](./output_images/challenge_video_output.mp4)
+Here's a [link to my challenge video result](./challenge_video_output.mp4)
 
 ---
 
