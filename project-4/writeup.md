@@ -19,11 +19,13 @@ The goals / steps of this project are the following:
 
 [image3](./writeup_images/thres_bin.png) "Binary Example"
 
-[image4](./writeup_images/compare_src_dst.png) "Warp Example"
+[image4](./writeup_images/warped_straight.png) "Warp Example"
 
-[image5](./writeup_images/poly.png) "Fit Visual"
+[image5](./writeup_images/compare_src_dst.png) "Warp Parameters Verification Sample"
 
-[image6](./writeup_images/lane_proj.png) "Plotted Down Output Example"
+[image6](./writeup_images/poly.png) "Fit Visual"
+
+[image7](./writeup_images/lane_proj.png) "Plotted Down Output Example"
 
 [video1](./output_images/project_video_output.mp4) "Project Output"
 
@@ -110,8 +112,11 @@ This resulted in the following source and destination points:
 | 1140,   668     | 670,  720      |
 | 140,   668      | 50,  720        |
 
+
+
 I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image.
 
+![image4](./writeup_images/warped_straight.png)
 ![](./writeup_images/compare_src_dst.png)
 
 #### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
