@@ -162,4 +162,15 @@ Also, I faced the situation that my pipeline failed to process the images under 
 Then, I added another function to use the result of the previous lane search when finding lines.
 I also started to use averaged polynomial coefficients and remove outlier data.
 
+After I had received the review to my submission, I realized and changed the following points.
+
+* My pipeline for video was not using undistorted image. So, I changed the code similar to the exisitng function for static image.
+* I realized that the bird-eye view does not necessarily mean that it has the same scaling for both x and y axis. So I changed the scaling for the y axis taking into account real view and radius.
+* In addition, I realized that the function for radius calculation was using the latest data only despite the fact that I had changed to utilize average values and eliminate outlier values for lane protting. So I changed to use the same inputs for the radius calculation.
+
 Regarding how I might improve it if I were going to pursue this project further, I like to consider how to use historical records to get better result, for example, how many times to keep the results of latest iterations to calculate the average, and what is the best way to eliminate outlier data.
+
+After I had received the review to my submission, I think the following points.
+
+* I certainly had an idea about critical failure, for example, sensoring too many outlier values. In the level of this project, I might be able to project alert message on the video, but it would be far from the real self-driving car. Just an idea though, the autonomous system may have some other logics depending on the situation, for example, wrong load condition, mighttime, rain and so on.
+* It is not enough to detect lane shape but any other objects on the road must be sensored by the system. I should learn it in the next project.
