@@ -168,7 +168,7 @@ After I had received the review to my first submission, I realized and changed t
 * I realized that the bird-eye view does not necessarily mean that it has the same scaling for both x and y axis. So I changed the scaling for the y axis taking into account real view and radius.
 * In addition, I realized that the function for radius calculation was using the latest data only despite the fact that I had changed to utilize average values and eliminate outlier values for lane protting. So I changed to use the same inputs for the radius calculation.
 
-After I had received the review to my second submission, I think the following points.
+After I had received the review to my second submission, I realized and changed the following points.
 * My camera caribration function was inappropriate, concretely speaking, inefficient as not utilizing the final outputs but intermediate parameters
 * My radius culculation function was incorrect, because the adjustment from pixel values to real meters was applied to the radius itself, although it must be applied to the pixle values before deriving coefficients, as clearing mentioned in the course.
 * I also changed the constant number used when multiplying y pixel values referring to the sample code in the course. Although the radii calculated in my videos are streaky, I thought I don't have to pursue this, as it is not essential for now.
