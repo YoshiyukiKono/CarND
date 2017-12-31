@@ -19,6 +19,26 @@ The goals / steps of this project are the following:
 [image7]: ./examples/output_bboxes.png
 [video1]: ./project_video.mp4
 
+[//]: # (Image References)
+
+[image1](./writeup_images/chess_dist.png) "Car and Not Car"
+
+[image2](./writeup_images/hog_visualization.png) "HOG Example"
+
+[image3](./writeup_images/thres_bin.png) "Sliding Windows"
+
+[image4](./writeup_images/warped_straight.png) "Sliding Window"
+
+[image5](./writeup_images/compare_src_dst.png) "BBoxes and Heat"
+
+[image6](./writeup_images/poly.png) "Labels Map"
+
+[image7](./writeup_images/lane_proj.png) "Output BBoxes"
+
+[video1](./output_images/project_video_output.mp4) "Project Output"
+
+
+
 ## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
 ### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
 
@@ -41,10 +61,10 @@ I started by reading in all the `vehicle` and `non-vehicle` images.  Here is an 
 
 I then explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  I grabbed random images from each of the two classes and displayed them to get a feel for what the `skimage.hog()` output looks like.
 
-Here is an example using the `YCrCb` color space and HOG parameters of `orientations=8`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
+Here is an example using the `RGB` color space and HOG parameters of `orientations=8`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
 
 
-![](./writeup_images/--------------------.png)
+![](./writeup_images/RGB_histogram.png)
 
 #### 2. Explain how you settled on your final choice of HOG parameters.
 
@@ -52,21 +72,22 @@ I tried various combinations of parameters and...
 
 #### 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
-I trained a linear SVM using...
+I trained a linear SVM using HOG features 
 
 ### Sliding Window Search
 
 #### 1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
-I decided to search random window positions at random scales all over the image and came up with this (ok just kidding I didn't actually ;):
+I decided to use two types of scale when searching cars: 0.9, 2. First of all, I used the bottom half of the image to search cars, as it covers the area of the load. Then, the first scale, 0.9, is used to search in the top half of the trimed image where cars look small. Then the second scale was used for the entire image (of the half of the original image).
 
-![](./writeup_images/--------------------.png)
+![](./writeup_images/scales_apply.png)
 
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
-Ultimately I searched on two scales using YCrCb 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are some example images:
+Ultimately I searched on two scales using HSV 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are some example images:
 
-![](./writeup_images/--------------------.png)
+![](./writeup_images/first_scale.png)
+![](./writeup_images/second_scale.png)
 ---
 
 ### Video Implementation
@@ -107,3 +128,19 @@ Here's an example result showing the heatmap from a series of frames of video, t
 
 Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
 
+* Tendency per color of cars
+* Scale modification for far small-looking car
+
+| Source        | Destination   | Destination   | 
+|:-------------:|:-------------:| -------------:|
+|color_space  |'HSV'  | 'HLS' #'RGB' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb |
+|orient       |9  | HOG orientations |
+|pix_per_cell |8  | HOG pixels per cell |
+|cell_per_block |2  | HOG cells per block |
+|hog_channel |"ALL" |1 # "ALL" #0 # Can be 0, 1, 2, or "ALL" |
+|spatial_size |(16, 16)  | Spatial binning dimensions |
+|hist_bins |16#32#16#32 #16  | Number of histogram bins |
+|spatial_feat |True  | Spatial features on or off |
+|hist_feat |True  | Histogram features on or off |
+|hog_feat |True  | HOG features on or off |
+|y_start_stop | [None, None]  | Min and max in y to search in slide_window() |
