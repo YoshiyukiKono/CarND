@@ -143,9 +143,13 @@ After the first review, I changed my pipeline using some of the suggestions prov
 * Apply the search area limitation for x axis of images
 * Use another color space, YUV
 * Increase the number of data by augumentation (flipping images)
-* Increase the number of que when averaging the last frames from 5 to 8 to make the bounding boxes smoother
 
 Using the YUV color space helped a lot to reduce false positives, and data augumentation seemingly contributed it somehow.
+
+Then, I modified the parameters when processing the video:
+
+* Use the higher threshold for heatmap (from 0.5 to 1) to ignore weak false positives
+
 As a result, I succeeded to significantly reduce false positives that would cause crtical accidents.
 
 ---
