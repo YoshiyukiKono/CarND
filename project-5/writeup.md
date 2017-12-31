@@ -85,7 +85,10 @@ Here are some example images:
 ![](./writeup_images/first_scale.png)
 ![](./writeup_images/second_scale.png)
 
-Before I decided the scales, I tried some thresholds and scales individually, then chose the threshold, 1.5, and the scales, 1.5 and 2.
+Before I decided the scales, I tried some thresholds and scales individually, then chose the threshold, 1.5, and the scales, 1.5 and 2, which derives the best result when processing the video at this momment.
+
+![](./writeup_images/scale1.5.png)
+![](./writeup_images/scale2.png)
 
 Regarding the performance of my classifier, I used sklearn's `grid_search.GridSearchCV` and challenged each classifier to predict test data set.
 
