@@ -85,7 +85,7 @@ Here are some example images:
 ![](./writeup_images/first_scale.png)
 ![](./writeup_images/second_scale.png)
 
-Before I decided the scales, I tried some thresholds and scales individually, then chose the threshold, 1.5, and the scales, 1.5 and 2, which derives the best result when processing the video at this momment.
+Before I decided the scales, I tried some thresholds and scales individually, then chose the threshold, 1.5, and the scales, 1.5 and 2, which derives the best result when processing the video.
 
 ![](./writeup_images/scale1.5.png)
 ![](./writeup_images/scale2.png)
@@ -106,7 +106,10 @@ My SVC predicts:  [ 1.  0.  1.  0.  0.  1.  0.  0.  1.  1.]
 For these 10 labels:  [ 1.  0.  1.  0.  0.  1.  0.  0.  1.  1.]
 0.0904710293 Seconds to predict 10 labels with SVC
 ```
-The result of `tuned_parameters = {'kernel':['linear'], 'C':[0.001, 0.01, 0.05, 0.1]}`
+The result of `tuned_parameters = {'kernel':['linear'], 'C':[0.001, 0.01, 0.05, 0.1]}`.
+
+Although GridSearchCV suggested C=0.001 is the best parameter, I chose C=0.1 with comprehensive consideration because each validation score is almost similar but it is far shorter time to predict with the latter parameter than the farmer.
+
 ```
 START to train SVC(with GridSearchCV)...
 2639.71 Seconds to train SVC(with GridSearchCV)...
@@ -120,7 +123,6 @@ For these 10 labels:  [ 0.  1.  0.  0.  1.  0.  0.  0.  1.  0.]
 0.0717737675 Seconds to predict 10 labels with SVC
 ```
 
-Although GridSearchCV suggested C=0.001 is the best parameter, I chose C=0.1 with comprehensive consideration because each validation score is almost similar but it is far shorter time to predict with the latter parameter than the farmer.
 ---
 
 ### Video Implementation
