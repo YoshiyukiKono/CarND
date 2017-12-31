@@ -138,6 +138,16 @@ I recorded the positions of positive detections in each frame of the video.  Fro
 
 When processing the video, I used deque to use the average of heatmap values in some frames.
 
+After the first review, I changed my pipeline using some of the suggestions provided by the reviewer:
+
+* Apply the search area limitation for x axis of images
+* Use another color space, YUV
+* Increase the number of data by augumentation (flipping images)
+* Increase the number of que when averaging the last frames from 5 to 8 to make the bounding boxes smoother
+
+Using the YUV color space helped a lot to reduce false positives, and data augumentation seemingly contributed it somehow.
+As a result, I succeeded to significantly reduce false positives that would cause crtical accidents.
+
 ---
 
 ### Discussion
