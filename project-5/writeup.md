@@ -9,36 +9,6 @@ The goals / steps of this project are the following:
 * Run your pipeline on a video stream (start with the test_video.mp4 and later implement on full project_video.mp4) and create a heat map of recurring detections frame by frame to reject outliers and follow detected vehicles.
 * Estimate a bounding box for vehicles detected.
 
-[//]: # (Image References)
-[image1]: ./examples/car_not_car.png
-[image2]: ./examples/HOG_example.jpg
-[image3]: ./examples/sliding_windows.jpg
-[image4]: ./examples/sliding_window.jpg
-[image5]: ./examples/bboxes_and_heat.png
-[image6]: ./examples/labels_map.png
-[image7]: ./examples/output_bboxes.png
-[video1]: ./project_video.mp4
-
-[//]: # (Image References)
-
-[image1](./writeup_images/chess_dist.png) "Car and Not Car"
-
-[image2](./writeup_images/hog_visualization.png) "HOG Example"
-
-[image3](./writeup_images/thres_bin.png) "Sliding Windows"
-
-[image4](./writeup_images/warped_straight.png) "Sliding Window"
-
-[image5](./writeup_images/compare_src_dst.png) "BBoxes and Heat"
-
-[image6](./writeup_images/poly.png) "Labels Map"
-
-[image7](./writeup_images/lane_proj.png) "Output BBoxes"
-
-[video1](./output_images/project_video_output.mp4) "Project Output"
-
-
-
 ## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
 ### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
 
@@ -53,17 +23,17 @@ You're reading it!
 
 #### 1. Explain how (and identify where in your code) you extracted HOG features from the training images.
 
-The code for this step is contained in the first code cell of the IPython notebook (or in lines # through # of the file called `some_file.py`).  
+The code for this step is contained in the code cells under the chapter `2. HOG Features` of the IPython notebook (the file called `Vehicle_Detection.ipynb`).  
 
 I started by reading in all the `vehicle` and `non-vehicle` images.  
-Images are taken from [Here](https://s3.amazonaws.com/udacity-sdc/Vehicle_Tracking/vehicles.zip) for vehicles and [https://s3.amazonaws.com/udacity-sdc/Vehicle_Tracking/non-vehicles.zip] for non-vehicles
+Images are taken from [Here](https://s3.amazonaws.com/udacity-sdc/Vehicle_Tracking/vehicles.zip) for vehicles and [Here](https://s3.amazonaws.com/udacity-sdc/Vehicle_Tracking/non-vehicles.zip) for non-vehicles
 Here is an example of one of each of the `vehicle` and `non-vehicle` classes:
 
 ![](./writeup_images/car_noncar_example.png)
 
-I then explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  I grabbed random images from each of the two classes and displayed them to get a feel for what the `skimage.hog()` output looks like.
+I grabbed random images from each of the two classes and displayed them to get a feel for what the `skimage.hog()` output looks like.
 
-Here is an example using the `RGB` color space and HOG parameters of `orientations=8`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
+Here is an example using the `RGB` color space and HOG parameters of `orientations=9`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
 
 ![](./writeup_images/RGB_histogram.png)
 
@@ -103,16 +73,51 @@ I trained a linear SVM using HOG, Color Histogram, and Spatial Binding futures.
 
 #### 1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
-I decided to use two types of scale when searching cars: 0.9, 2. First of all, I used the bottom half of the image to search cars, as it covers the area of the load. Then, the first scale, 0.9, is used to search in the top half of the trimed image where cars look small. Then the second scale was used for the entire image (of the half of the original image).
+I decided to use two types of scale when searching cars: 1.5, 2. First of all, I used the bottom half of the image to search cars, as it covers the area of the load. Then, the first scale, 1.5, is used to search in the top half of the trimed image where cars look small. Then the second scale was used for the entire image (of the half of the original image).
 
 ![](./writeup_images/scales_apply.png)
 
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
-Ultimately I searched on two scales using HSV 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are some example images:
+I searched on two scales using HSV 3-channel HOG features plus spatially binned color and histograms of color in the feature vector.
+Here are some example images:
 
 ![](./writeup_images/first_scale.png)
 ![](./writeup_images/second_scale.png)
+
+Before I decided the scales, I tried some thresholds and scales individually, then chose the threshold, 1.5, and the scales, 1.5 and 2.
+
+Regarding the performance of my classifier, I used sklearn's `grid_search.GridSearchCV` and challenged each classifier to predict test data set.
+
+The result of Cross-Validation using `tuned_parameters = {'kernel':['linear'], 'C':[0.1, 0.5, 1]}`
+```
+
+START to train SVC(with GridSearchCV)...
+2028.56 Seconds to train SVC(with GridSearchCV)...
+Best Parameters: {'C': 0.1, 'kernel': 'linear'}
+Best cross-validation score: 0.99
+[mean: 0.98909, std: 0.00100, params: {'C': 0.1, 'kernel': 'linear'}, mean: 0.98909, std: 0.00100, params: {'C': 0.5, 'kernel': 'linear'}, mean: 0.98909, std: 0.00100, params: {'C': 1, 'kernel': 'linear'}]
+[mean: 0.98909, std: 0.00100, params: {'C': 0.1, 'kernel': 'linear'}, mean: 0.98909, std: 0.00100, params: {'C': 0.5, 'kernel': 'linear'}, mean: 0.98909, std: 0.00100, params: {'C': 1, 'kernel': 'linear'}]
+Test Accuracy of SVC =  0.9901
+My SVC predicts:  [ 1.  0.  1.  0.  0.  1.  0.  0.  1.  1.]
+For these 10 labels:  [ 1.  0.  1.  0.  0.  1.  0.  0.  1.  1.]
+0.0904710293 Seconds to predict 10 labels with SVC
+```
+The result of `tuned_parameters = {'kernel':['linear'], 'C':[0.001, 0.01, 0.05, 0.1]}`
+```
+START to train SVC(with GridSearchCV)...
+2639.71 Seconds to train SVC(with GridSearchCV)...
+Best Parameters: {'C': 0.001, 'kernel': 'linear'}
+Best cross-validation score: 0.99
+[mean: 0.98951, std: 0.00170, params: {'C': 0.001, 'kernel': 'linear'}, mean: 0.98923, std: 0.00131, params: {'C': 0.01, 'kernel': 'linear'}, mean: 0.98923, std: 0.00131, params: {'C': 0.05, 'kernel': 'linear'}, mean: 0.98923, std: 0.00131, params: {'C': 0.1, 'kernel': 'linear'}]
+[mean: 0.98951, std: 0.00170, params: {'C': 0.001, 'kernel': 'linear'}, mean: 0.98923, std: 0.00131, params: {'C': 0.01, 'kernel': 'linear'}, mean: 0.98923, std: 0.00131, params: {'C': 0.05, 'kernel': 'linear'}, mean: 0.98923, std: 0.00131, params: {'C': 0.1, 'kernel': 'linear'}]
+Test Accuracy of SVC =  0.9904
+My SVC predicts:  [ 0.  1.  0.  0.  1.  0.  0.  0.  1.  0.]
+For these 10 labels:  [ 0.  1.  0.  0.  1.  0.  0.  0.  1.  0.]
+0.0717737675 Seconds to predict 10 labels with SVC
+```
+
+Although GridSearchCV suggested C=0.001 is the best parameter, I chose C=0.1 with comprehensive consideration because each validation score is almost similar but it is far shorter time to predict with the latter parameter than the farmer.
 ---
 
 ### Video Implementation
@@ -126,7 +131,7 @@ Here's a [link to my video result](./output_images/project_video_out.mp4)
 
 I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.  
 
-When processing the video, I used deque to use the advantage of heatmap values in some frames.
+When processing the video, I used deque to use the average of heatmap values in some frames.
 
 ---
 
@@ -134,7 +139,10 @@ When processing the video, I used deque to use the advantage of heatmap values i
 
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+An example of issues that I faced was the scale of cars. I solved the issue as I mentioned above.
+My approach was step by step basis. I tried to meet issues as each one is a small chunk.
 
-* Scale modification for distant car
-* 
+My pipeline will fail when unexpected objects appear on the road (My pipeline is certainly not robust about the cars running the opposite lane and when driving under the shadow of trees).
+Another example is when the driving situation changes, like rain or snow.
+If I were going to pursue this project further, I may try to improve my pipeline to accomodate with different situations although it would need to use plenty of time.
+Or, when I recall closely what I did, I will try more valiation of parameters, scales, and target areas where cars are supposed to be detected.
