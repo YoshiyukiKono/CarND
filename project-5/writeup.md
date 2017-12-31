@@ -55,7 +55,9 @@ You're reading it!
 
 The code for this step is contained in the first code cell of the IPython notebook (or in lines # through # of the file called `some_file.py`).  
 
-I started by reading in all the `vehicle` and `non-vehicle` images.  Here is an example of one of each of the `vehicle` and `non-vehicle` classes:
+I started by reading in all the `vehicle` and `non-vehicle` images.  
+Images are taken from [Here](https://s3.amazonaws.com/udacity-sdc/Vehicle_Tracking/vehicles.zip) for vehicles and [https://s3.amazonaws.com/udacity-sdc/Vehicle_Tracking/non-vehicles.zip] for non-vehicles
+Here is an example of one of each of the `vehicle` and `non-vehicle` classes:
 
 ![](./writeup_images/car_noncar_example.png)
 
@@ -63,16 +65,39 @@ I then explored different color spaces and different `skimage.hog()` parameters 
 
 Here is an example using the `RGB` color space and HOG parameters of `orientations=8`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
 
-
 ![](./writeup_images/RGB_histogram.png)
 
 #### 2. Explain how you settled on your final choice of HOG parameters.
 
-I tried various combinations of parameters and...
+I tried various combinations of parameters and used the following parameter in my project.
+
+| Parameter        | Value   | Remarks   | 
+|:-------------:|:-------------:| :-------------|
+|color_space  |HSV  | Can be RGB, HSV, LUV, HLS, YUV, YCrCb |
+|orient       |9  | HOG orientations |
+|pix_per_cell |8  | HOG pixels per cell |
+|cell_per_block |2  | HOG cells per block |
+|hog_channel |ALL | Can be 0, 1, 2, or "ALL" |
+
+To reach the above combination, I compared each accuracy for some combinations, as follows:
+* HSV is the best of color spaces
+* hog_channel: All is better than 1
+* for the other parameters, I chose these values from sample code or forum recomendation
 
 #### 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
-I trained a linear SVM using HOG features 
+I trained a linear SVM using HOG, Color Histogram, and Spatial Binding futures.
+
+| Parameter        | Value   | Remarks   | 
+|:-------------:|:-------------:| :-------------|
+|spatial_size |(16, 16)  | Spatial binning dimensions |
+|hist_bins |16 | Number of histogram bins |
+|spatial_feat |True  | Spatial features on or off |
+|hist_feat |True  | Histogram features on or off |
+|hog_feat |True  | HOG features on or off |
+
+* hist_bin: 16 is better than 32
+* for the other parameters, I chose these values from sample code or forum recomendation
 
 ### Sliding Window Search
 
@@ -94,31 +119,14 @@ Ultimately I searched on two scales using HSV 3-channel HOG features plus spatia
 
 #### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)
 
-Here's a [link to my video result](./output_images/project_video_output.mp4)
+Here's a [link to my video result](./output_images/project_video_out.mp4)
 
 
 #### 2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
 I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.  
 
-Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
-
-### Here are six frames and their corresponding heatmaps:
-
-![](./writeup_images/--------------------.png)
-![](./writeup_images/--------------------.png)
-![](./writeup_images/--------------------.png)
-![](./writeup_images/--------------------.png)
-![](./writeup_images/--------------------.png)
-![](./writeup_images/--------------------.png)
-
-### Here is the output of `scipy.ndimage.measurements.label()` on the integrated heatmap from all six frames:
-
-![](./writeup_images/--------------------.png)
-
-### Here the resulting bounding boxes are drawn onto the last frame in the series:
-
-![](./writeup_images/--------------------.png)
+When processing the video, I used deque to use the advantage of heatmap values in some frames.
 
 ---
 
@@ -128,19 +136,5 @@ Here's an example result showing the heatmap from a series of frames of video, t
 
 Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
 
-* Tendency per color of cars
-* Scale modification for far small-looking car
-
-| Source        | Destination   | Destination   | 
-|:-------------:|:-------------:| -------------:|
-|color_space  |'HSV'  | 'HLS' #'RGB' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb |
-|orient       |9  | HOG orientations |
-|pix_per_cell |8  | HOG pixels per cell |
-|cell_per_block |2  | HOG cells per block |
-|hog_channel |"ALL" |1 # "ALL" #0 # Can be 0, 1, 2, or "ALL" |
-|spatial_size |(16, 16)  | Spatial binning dimensions |
-|hist_bins |16#32#16#32 #16  | Number of histogram bins |
-|spatial_feat |True  | Spatial features on or off |
-|hist_feat |True  | Histogram features on or off |
-|hog_feat |True  | HOG features on or off |
-|y_start_stop | [None, None]  | Min and max in y to search in slide_window() |
+* Scale modification for distant car
+* 
